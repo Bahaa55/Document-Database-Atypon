@@ -11,7 +11,6 @@ public class ReadService {
     public JsonObject getDocument(String id, String schema) throws IOException {
         JsonParser parser = new JsonParser();
         File file = new File("./db/" + schema + "/" + id + ".json");
-        JsonObject document = (JsonObject) parser.parse(new FileReader(file));
-        return document;
+        return (JsonObject) parser.parse(new FileReader(file));
     }
 }

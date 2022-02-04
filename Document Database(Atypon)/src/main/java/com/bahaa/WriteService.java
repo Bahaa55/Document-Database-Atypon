@@ -1,17 +1,13 @@
 package com.bahaa;
 
 import com.google.gson.*;
-import com.google.gson.stream.JsonReader;
-import com.google.gson.stream.JsonWriter;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class WriteService {
-    private static int id;
+    private static Integer id;
     private JsonObject config;
 
     WriteService() {
@@ -23,7 +19,6 @@ public class WriteService {
             throw new RuntimeException("Error loading configuration file.\n" +
                     "Make sure the file config.json is available.");
         }
-
     }
 
     public JsonObject addDocument(String document, String schema) throws IOException {
@@ -40,6 +35,13 @@ public class WriteService {
 
         return jsonData;
     }
+
+    public void deleteDocument(String id, String schema){
+        File document = new File("./db/" + schema + "/" + id + ".json");
+        if(!document.delete())
+            System.out.println("Couldn't delete this document. Try again!");
+    }
+
     private int getNewId(String schema){
         id = config.get(schema + "_id").getAsInt();
         JsonElement newId = new JsonPrimitive(++id);
@@ -53,6 +55,7 @@ public class WriteService {
         }
         return id;
     }
+
     private void updateConfig() throws IOException {
         File file = new File("./db/config.json");
         FileWriter fileWriter = new FileWriter(file);

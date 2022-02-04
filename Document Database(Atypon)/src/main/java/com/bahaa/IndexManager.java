@@ -1,56 +1,49 @@
 package com.bahaa;
 
+import com.bahaa.BPlusTree.BPlusTree;
 import com.google.gson.*;
-import com.google.gson.reflect.TypeToken;
-import com.google.gson.stream.JsonReader;
-
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.io.*;
+import java.util.*;
 
 public class IndexManager {
-    private HashMap<String,BPlusTree<String>> client_indexes = new HashMap<>();
-    private HashMap<String,BPlusTree<String>> product_indexes;
-    private Type indexType = new TypeToken<HashMap<String,BPlusTree<String>>>() {}.getType();
-    private Gson gson;
-    public IndexManager(){
-        gson = new Gson();
-        File clientFile = new File("./db/client_index.json");
-        File productFile = new File("./db/product_index.json");
+    private static IndexManager instance = new IndexManager();
+    private HashMap<String,HashMap<String, BPlusTree<String>>> indexes;
 
-        try {
-            client_indexes = gson.fromJson(new FileReader(clientFile), indexType);
-            product_indexes = gson.fromJson(new FileReader(productFile), indexType);
-        }catch(Exception e){
-            System.out.println("Can't load indexes, make sure that files (product_index / client_index) are available.");
+    private IndexManager(){
+        indexes = new HashMap<>();
+        File directory = new File("./db/indexes");
+        for(File file : directory.listFiles()){
+            try{
+                    String schema = file.getName();
+                    FileInputStream inputFile = new FileInputStream(file);
+                    ObjectInputStream inputOis = new ObjectInputStream(inputFile);
+                    indexes.put(schema,(HashMap<String, BPlusTree<String>>) inputOis.readObject());
+            }catch(Exception e){
+                throw new RuntimeException("Can't load index for schema: "+ file.getName());
+            }
         }
     }
 
-    public Integer getClientId(String attribute, String value){
-        if(client_indexes.get(attribute) == null)
-            return -1;
-        return client_indexes.get(attribute).search(value);
+    public static IndexManager getInstance(){
+        return instance;
     }
 
-    public Integer getProductId(String attribute, String value){
-        if(product_indexes.get(attribute) == null)
-            return -1;
-        return product_indexes.get(attribute).search(value);
+    public List<String> getIds(String schema, String attribute, String value){
+        if(indexes.get(schema).get(attribute) == null)
+            return new ArrayList<>();
+        return indexes.get(schema).get(attribute).search(value);
     }
 
     public boolean makeIndex(String schema, String attribute){
-        if(schema.equals("client") && client_indexes.get(attribute) != null)
-            return false;
-        if(schema.equals("product") && product_indexes.get(attribute) != null)
+        if(indexes.get(schema) == null)
+            indexes.put(schema,new HashMap<>());
+
+        if(indexes.get(schema).get(attribute) != null)
             return false;
 
         ArrayList<Pair<String,Integer>> values = getValues(schema,attribute);
         createTree(values,schema,attribute);
-        update();
+        update(schema);
         return true;
     }
 
@@ -71,48 +64,71 @@ public class IndexManager {
         }
         return ret;
     }
+
     private void createTree(ArrayList<Pair<String,Integer>> values, String schema, String attribute){
-        BPlusTree<String> tree = new BPlusTree<>(3);
-        for(Pair<String,Integer> val : values) {
+        BPlusTree<String> tree = new BPlusTree<>(3,schema);
+        for(Pair<String,Integer> val : values)
             tree.insert(val.getKey(), val.getValue());
-        }
-        if(schema.equals("client"))
-            client_indexes.put(attribute,tree);
-        else
-            product_indexes.put(attribute,tree);
+
+        indexes.get(schema).put(attribute,tree);
     }
 
-    private void update(){
-        try {
-            String client = gson.toJson(client_indexes);
-            String product = gson.toJson(product_indexes);
-
-            File clientFile = new File("./db/client_index.json");
-            File productFile = new File("./db/product_index.json");
-
-            FileWriter fileWriter = new FileWriter(clientFile);
-            fileWriter.write(client);
-            fileWriter.flush();
-            fileWriter.close();
-
-            fileWriter = new FileWriter(productFile);
-            fileWriter.write(product);
-            fileWriter.flush();
-            fileWriter.close();
-
+    private void update(String schema){
+        try{
+            FileOutputStream outputFile = new FileOutputStream("./db/indexes/"+ schema + "_index.dat");
+            ObjectOutputStream outputOos = new ObjectOutputStream(outputFile);
+            outputOos.writeObject(indexes.get(schema));
+            outputOos.flush();
+            outputOos.close();
         }catch(Exception e){
-            System.out.println("Couldn't update the indexes.");
+            System.out.println("Couldn't update index \""+ schema + "\".");
         }
     }
+
+    public void updateIndex(String schema, JsonObject document){
+        if(indexes.get(schema) == null)
+            indexes.put(schema,new HashMap<>());
+
+        int id = document.get("id").getAsInt();
+        Set<Map.Entry<String, JsonElement>> entrySet = document.entrySet();
+        for(Map.Entry<String,JsonElement> entry : entrySet){
+            String key = entry.getKey();
+            String value = document.get(key).getAsString();
+            if(indexes.get(schema).get(key) == null)
+                continue;
+            indexes.get(schema).get(key).insert(value,id);
+        }
+        update(schema);
+    }
+
+
+    private class Pair<Key, Value> implements Serializable{
+        private Key key;
+        private Value value;
+        Pair(Key key, Value value){
+            this.key = key;
+            this.value = value;
+        }
+        Key getKey(){ return key; }
+        Value getValue(){ return value; }
+    }
+
+    public void deleteIndexes(String schema,JsonObject document){
+        Set<Map.Entry<String, JsonElement>> entrySet = document.entrySet();
+        String id = document.get("id").getAsString();
+        for(Map.Entry<String,JsonElement> entry : entrySet){
+            String key = entry.getKey();
+            String value = document.get(key).getAsString();
+            if(indexes.get(schema).get(key) == null)
+                continue;
+            if(indexes.get(schema).get(key).deleteFromDuplicates(schema,value,id) == false){
+                indexes.get(schema).get(key).delete(value);
+                indexes.get(schema).get(key).replaceDuplicate(value);
+            }
+        }
+        update(schema);
+    }
+
 }
 
-class Pair<Key, Value>{
-    private Key key;
-    private Value value;
-    Pair(Key key, Value value){
-        this.key = key;
-        this.value = value;
-    }
-    Key getKey(){ return key; }
-    Value getValue(){ return value; }
-}
+
