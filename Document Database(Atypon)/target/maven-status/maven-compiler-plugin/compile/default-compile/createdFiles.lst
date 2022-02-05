@@ -1,6 +1,7 @@
 com/bahaa/BPlusTree/BPlusTree.class
 com/bahaa/IndexManager.class
 com/bahaa/BPlusTree/DuplicateHandler.class
+com/bahaa/ZipDirectory.class
 com/bahaa/WriteService.class
 com/bahaa/BPlusTree/BPlusTree$DictionaryPair.class
 com/bahaa/MainController.class

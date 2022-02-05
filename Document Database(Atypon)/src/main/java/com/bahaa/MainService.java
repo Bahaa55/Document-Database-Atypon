@@ -2,9 +2,10 @@ package com.bahaa;
 
 import com.google.gson.JsonObject;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.zip.ZipOutputStream;
 
 public class MainService {
     private WriteService writeService;
@@ -62,5 +63,20 @@ public class MainService {
 
     public void makeIndex(String schema, String attribute){
         indexManager.makeIndex(schema,attribute);
+    }
+
+    public void exportDb(){
+        try{
+            ZipDirectory.zipDirectory("db.zip","./db");
+        }catch(Exception e){
+            System.out.println("Can't find the db data.");
+        }
+    }
+    public void importDb(){
+        try {
+            ZipDirectory.unzipDirectory("./db.zip","./db2");
+        }catch(Exception e){
+            System.out.println("Can't import the zipped file.");
+        }
     }
 }

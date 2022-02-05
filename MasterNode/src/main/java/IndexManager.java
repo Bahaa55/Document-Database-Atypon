@@ -65,7 +65,7 @@ public class IndexManager {
     }
 
     private void createTree(ArrayList<Pair<String,Integer>> values, String schema, String attribute){
-        BPlusTree<String> tree = new BPlusTree<>(3,schema);
+        BPlusTree<String> tree = new BPlusTree<String>(3,schema);
         for(Pair<String,Integer> val : values)
             tree.insert(val.getKey(), val.getValue());
 

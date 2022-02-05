@@ -114,4 +114,11 @@ public class WriteService {
         fileWriter.close();
     }
 
+    public void exportDb(){
+        try{
+            ZipDirectory.zipDirectory("db.zip","./db");
+        }catch(Exception e){
+            System.out.println("Can't find the db data.");
+        }
+    }
 }

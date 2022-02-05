@@ -32,4 +32,12 @@ public class ReadService {
         return indexManager.getIds(schema,attribute,value);
     }
 
+    public void importDb(){
+        try {
+            ZipDirectory.unzipDirectory("./db.zip","./db2");
+        }catch(Exception e){
+            System.out.println("Can't import the zipped file.");
+        }
+    }
+
 }
