@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import java.io.*;
+import java.util.Scanner;
 
 public class WriteService {
     private static WriteService instance = new WriteService();
@@ -29,7 +30,10 @@ public class WriteService {
         }
 
         try {
-            Runtime.getRuntime().exec("./bin/initCluster.sh");
+            Scanner scanner = new Scanner(System.in);
+            System.out.println("Inter github token to access the repository: ");
+            String token = scanner.nextLine();
+            Runtime.getRuntime().exec("./bin/initCluster.sh "+ token);
         } catch (IOException e) {
             System.out.println("Couldn't create the cluster, try again.");
         }
