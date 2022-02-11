@@ -16,13 +16,11 @@ public class ReadService {
     private IndexManager indexManager;
 
     private ReadService(){
-        indexManager = IndexManager.getInstance();
-
-        File file = new File("./db0");
+        File file = new File("./db0/db");
         boolean exists = file.exists();
        try {
            dbLock.acquire();
-           if(exists)
+           if(exists == true)
                dbPointer = 0;
            else
                dbPointer = 1;
@@ -30,6 +28,7 @@ public class ReadService {
        } catch (InterruptedException e) {
            e.printStackTrace();
        }
+       indexManager = IndexManager.getInstance();
     }
 
     public static ReadService getInstance(){
@@ -44,7 +43,7 @@ public class ReadService {
     public JsonObject getDocument(String id, String schema) {
         try {
             JsonParser parser = new JsonParser();
-            File file = new File("./db" + dbPointer + "/db/" + schema + "/" + id + ".json");
+            File file = new File(ReadService.getDbPath() + "/" + schema + "/" + id + ".json");
             JsonObject document = (JsonObject) parser.parse(new FileReader(file));
             return document;
         }catch(Exception e){

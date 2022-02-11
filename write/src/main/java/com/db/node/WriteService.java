@@ -5,8 +5,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import java.io.*;
-import java.util.List;
-import java.util.zip.ZipInputStream;
 
 public class WriteService {
     private static WriteService instance = new WriteService();
@@ -30,9 +28,11 @@ public class WriteService {
                     "Make sure the file config.json is available.");
         }
 
-        // TODO : Make sure there's at least 3 nodes in the cluster
-        ReadNode node = new ReadNode("http://localhost:2/update");
-        loadBalancer.addObserver(node);
+        try {
+            Runtime.getRuntime().exec("./bin/initCluster.sh");
+        } catch (IOException e) {
+            System.out.println("Couldn't create the cluster, try again.");
+        }
     }
 
     public JsonObject addDocument(String document, String schema) {
@@ -160,5 +160,11 @@ public class WriteService {
         } catch (Exception e) {
             System.out.println("Couldn't update normally");
         }
+    }
+
+    public void addNode(String port){
+        System.out.println(port);
+        ReadNode node = new ReadNode("http://localhost:"+port+"/update");
+        loadBalancer.addObserver(node);
     }
 }

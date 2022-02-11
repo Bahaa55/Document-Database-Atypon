@@ -45,15 +45,20 @@ public class WriteController {
 
 	@GetMapping("/{id}")
 	public RedirectView get(@RequestParam String schema , @PathVariable String id){
-		return new RedirectView("http://localhost:1026/" + id + "?schema="+schema);
+		return new RedirectView("http://localhost:2001/" + id + "?schema="+schema);
 	}
 
 	@GetMapping("/index")
 	public RedirectView getByIndex(@RequestParam String schema,
 							 @RequestParam String attribute,
 							 @RequestParam String value){
-		return new RedirectView("http://localhost:1026/index" + "?schema="+schema
+		return new RedirectView("http://localhost:2001/index" + "?schema="+schema
 		+ "&attribute=" + attribute + "&value=" +value);
+	}
+
+	@GetMapping("/add-node")
+	public void addNode(@RequestParam String port){
+		writeService.addNode(port);
 	}
 
 	@DeleteMapping("/{id}")

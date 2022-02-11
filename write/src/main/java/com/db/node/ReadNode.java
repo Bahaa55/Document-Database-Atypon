@@ -16,7 +16,6 @@ public class ReadNode implements java.util.Observer {
     @Override
     public void update(Observable o, Object arg) {
 
-        String url = "http://localhost:1026/update";
         String charset = "UTF-8";
         String param = "value";
         File dbFile = new File("./db.zip");
@@ -63,8 +62,10 @@ public class ReadNode implements java.util.Observer {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if(responseCode != 200)
+        if(responseCode != 200){
+            System.out.println(url);
             System.out.println("Couldn't update this node");
+        }
 
     }
 }
