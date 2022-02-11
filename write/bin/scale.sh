@@ -1,7 +1,7 @@
 #!/bin/bash
 
 port=${1}
-
+cd ..
 cd ..
 cd nodes
 mkdir ${port}
