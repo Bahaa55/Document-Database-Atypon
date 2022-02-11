@@ -1,13 +1,13 @@
 package com.db.node;
 
 import java.io.*;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
+import java.util.zip.*;
 
-public class ZipDirectory {
+public class ZipService {
 
 
     public static ZipInputStream unzipDirectory(String source, String destination) throws IOException {
+
         File destDir = new File(destination);
         byte[] buffer = new byte[1024];
         File zippedDbFile = new File(source);

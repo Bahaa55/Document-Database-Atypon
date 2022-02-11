@@ -1,9 +1,7 @@
-package com.db.node;
+package com.db.node.Services;
 
 import com.db.node.BPlusTree.BPlusTree;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 
 import java.io.*;
 import java.util.*;
@@ -16,6 +14,10 @@ public class IndexManager {
         indexes = new HashMap<>();
         File directory = new File("./db/indexes");
         for(File file : directory.listFiles()){
+
+            if(file.getName().startsWith("."))
+                continue;
+
             try{
                     String schema = file.getName().split("_")[0];
                     FileInputStream inputFile = new FileInputStream(file);

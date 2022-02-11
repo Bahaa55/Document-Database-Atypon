@@ -13,6 +13,10 @@ public class IndexManager {
         indexes = new HashMap<>();
         File directory = new File(ReadService.getDbPath() + "/indexes");
         for(File file : directory.listFiles()){
+
+            if(file.getName().startsWith("."))
+                continue;
+
             try{
                 String schema = file.getName().split("_")[0];
                 FileInputStream inputFile = new FileInputStream(file);
@@ -34,8 +38,7 @@ public class IndexManager {
 
         if(indexes.get(schema).get(attribute) == null)
             return new ArrayList<>();
+
         return indexes.get(schema).get(attribute).search(value);
     }
 }
-
-

@@ -1,17 +1,14 @@
 package com.db.node.BPlusTree;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class BPlusTree<T extends Comparable<T>> implements Serializable {
-    private int m;
+    private final int m;
     private InternalNode root;
     private LeafNode firstLeaf;
-    private DuplicateHandler duplicateHandler;
-    private String schema;
+    private final DuplicateHandler duplicateHandler;
+    private final String schema;
 
     public BPlusTree(int m, String schema) {
         this.m = m;
@@ -50,7 +47,7 @@ public class BPlusTree<T extends Comparable<T>> implements Serializable {
             }
         }
 
-        Node child = this.root.childPointers[i];
+        Node child = (Node) this.root.childPointers[i];
         if (child instanceof LeafNode) {
             return (LeafNode) child;
         } else {
@@ -60,7 +57,7 @@ public class BPlusTree<T extends Comparable<T>> implements Serializable {
 
     private LeafNode findLeafNode(InternalNode node, T key) {
 
-        T[] keys = (T[]) node.keys;
+        T[] keys = (T[]) this.root.keys;
         int i;
 
         for (i = 0; i < node.degree - 1; i++) {
@@ -68,7 +65,7 @@ public class BPlusTree<T extends Comparable<T>> implements Serializable {
                 break;
             }
         }
-        Node childNode = node.childPointers[i];
+        Node childNode = (Node) node.childPointers[i];
         if (childNode instanceof LeafNode) {
             return (LeafNode) childNode;
         } else {
@@ -114,7 +111,7 @@ public class BPlusTree<T extends Comparable<T>> implements Serializable {
             sibling = in.rightSibling;
 
             T borrowedKey = (T) sibling.keys[0];
-            Node pointer = sibling.childPointers[0];
+            Node pointer = (Node) sibling.childPointers[0];
 
             in.keys[in.degree - 1] = parent.keys[0];
             in.childPointers[in.degree] = pointer;

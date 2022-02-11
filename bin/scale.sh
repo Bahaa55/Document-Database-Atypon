@@ -10,6 +10,6 @@ cd ${port}
 git init
 git pull https://${token}:@github.com/Bahaa55/Document-Database-Atypon
 cd read
-mvn spring-boot:run -Dspring-boot.run.arguments=--server.port=${port}
+nohup mvn spring-boot:run -Dspring-boot.run.arguments=--server.port=${port} &
 curl http://localhost:2000/add-node?port=${port}
 

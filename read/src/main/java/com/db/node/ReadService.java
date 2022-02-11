@@ -1,12 +1,11 @@
 package com.db.node;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import org.springframework.scheduling.annotation.Async;
-
+import org.springframework.web.multipart.MultipartFile;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.file.*;
+import java.util.*;
 import java.util.concurrent.Semaphore;
 
 public class ReadService {
@@ -41,10 +40,10 @@ public class ReadService {
 
     @Async()
     public JsonObject getDocument(String id, String schema) {
-        try {
-            JsonParser parser = new JsonParser();
-            File file = new File(ReadService.getDbPath() + "/" + schema + "/" + id + ".json");
-            JsonObject document = (JsonObject) parser.parse(new FileReader(file));
+        JsonParser parser = new JsonParser();
+        File file = new File(ReadService.getDbPath() + "/" + schema + "/" + id + ".json");
+        try(FileReader fileReader = new FileReader(file)) {
+            JsonObject document = (JsonObject) parser.parse(fileReader);
             return document;
         }catch(Exception e){
             System.out.println("Document not found!");
@@ -72,22 +71,31 @@ public class ReadService {
         return indexManager.getIds(schema,attribute,value);
     }
 
-    public void importDb(){
+    public boolean importDb(MultipartFile file){
+        if (file.isEmpty()) {
+            return false;
+        }
         try {
             dbLock.acquire();
+
+            byte[] bytes = file.getBytes();
+            Path path = Paths.get("./" + file.getOriginalFilename());
+            Files.write(path, bytes);
 
             int newDbPointer = 0;
             if(dbPointer == 0)
                 newDbPointer = 1;
 
-            ZipDirectory.unzipDirectory("./db.zip","./db"+newDbPointer);
+            ZipService.unzipDirectory("./db.zip","./db"+newDbPointer);
             deleteDirectory(new File(ReadService.getDbPath()));
             new File("./db.zip").delete();
 
             dbPointer = newDbPointer;
             dbLock.release();
+            return true;
         } catch (Exception e) {
             System.out.println("Couldn't update normally");
+            return false;
         }
     }
 

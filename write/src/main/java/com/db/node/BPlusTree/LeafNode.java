@@ -4,12 +4,28 @@ import java.io.Serializable;
 import java.util.Arrays;
 
 class LeafNode<T> extends Node implements Serializable {
-    int maxNumPairs;
-    int minNumPairs;
-    int numPairs;
-    LeafNode<T> leftSibling;
-    LeafNode<T> rightSibling;
-    BPlusTree.DictionaryPair[] dictionary;
+    protected int maxNumPairs;
+    protected int minNumPairs;
+    protected int numPairs;
+    protected  LeafNode<T> leftSibling;
+    protected LeafNode<T> rightSibling;
+    protected BPlusTree.DictionaryPair[] dictionary;
+
+    protected LeafNode(int m, BPlusTree.DictionaryPair dp) {
+        this.maxNumPairs = m - 1;
+        this.minNumPairs = (int) (Math.ceil(m / 2) - 1);
+        this.dictionary = new BPlusTree.DictionaryPair[m];
+        this.numPairs = 0;
+        this.insert(dp);
+    }
+
+    protected LeafNode(int m, BPlusTree.DictionaryPair[] dps, InternalNode parent) {
+        this.maxNumPairs = m - 1;
+        this.minNumPairs = (int) (Math.ceil(m / 2) - 1);
+        this.dictionary = dps;
+        this.numPairs = linearNullSearch(dps);
+        this.parent = parent;
+    }
 
     public void delete(int index) {
         this.dictionary[index] = null;
@@ -44,19 +60,4 @@ class LeafNode<T> extends Node implements Serializable {
         return numPairs == minNumPairs;
     }
 
-    public LeafNode(int m, BPlusTree.DictionaryPair dp) {
-        this.maxNumPairs = m - 1;
-        this.minNumPairs = (int) (Math.ceil(m / 2) - 1);
-        this.dictionary = new BPlusTree.DictionaryPair[m];
-        this.numPairs = 0;
-        this.insert(dp);
-    }
-
-    public LeafNode(int m, BPlusTree.DictionaryPair[] dps, InternalNode parent) {
-        this.maxNumPairs = m - 1;
-        this.minNumPairs = (int) (Math.ceil(m / 2) - 1);
-        this.dictionary = dps;
-        this.numPairs = linearNullSearch(dps);
-        this.parent = parent;
-    }
 }

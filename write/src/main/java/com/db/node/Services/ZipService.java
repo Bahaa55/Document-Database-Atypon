@@ -1,25 +1,26 @@
-package com.db.node;
+package com.db.node.Services;
 
 import java.io.*;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipInputStream;
-import java.util.zip.ZipOutputStream;
+import java.util.zip.*;
 
-public class ZipDirectory {
-    public static void zipDirectory(String fileDestination, String fileSource) throws IOException {
-        FileOutputStream fos = new FileOutputStream(fileDestination);
-        ZipOutputStream zipOut = new ZipOutputStream(fos);
+public class ZipService {
+    public static boolean zipDirectory(String fileDestination, String fileSource)  {
         File fileToZip = new File(fileSource);
-
-        zipFile(fileToZip, fileToZip.getName(), zipOut);
         File zipped = new File("./db.dat");
-        FileOutputStream temp = new FileOutputStream(zipped);
-        ObjectOutputStream oos = new ObjectOutputStream(temp);
-        oos.writeObject(new File("./db.zip"));
-        oos.flush();
-        oos.close();
-        zipOut.close();
-        fos.close();
+
+        try(
+                FileOutputStream fos = new FileOutputStream(fileDestination);
+                ZipOutputStream zipOut = new ZipOutputStream(fos);
+                FileOutputStream temp = new FileOutputStream(zipped);
+                ObjectOutputStream oos = new ObjectOutputStream(temp);
+        ){
+            zipFile(fileToZip, fileToZip.getName(), zipOut);
+            oos.writeObject(new File("./db.zip"));
+            oos.flush();
+            return true;
+        } catch (IOException e) {
+            return false;
+        }
     }
 
     private static void zipFile(File fileToZip, String fileName, ZipOutputStream zipOut) throws IOException {

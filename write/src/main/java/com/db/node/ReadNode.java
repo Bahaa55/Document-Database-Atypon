@@ -1,9 +1,7 @@
 package com.db.node;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLConnection;
+import java.net.*;
 import java.nio.file.Files;
 import java.util.Observable;
 
@@ -15,7 +13,7 @@ public class ReadNode implements java.util.Observer {
 
     @Override
     public void update(Observable o, Object arg) {
-
+        String url = this.url + "/update";
         String charset = "UTF-8";
         String param = "value";
         File dbFile = new File("./db.zip");
@@ -68,4 +66,6 @@ public class ReadNode implements java.util.Observer {
         }
 
     }
+
+    public String getNodeUrl(){return url;}
 }

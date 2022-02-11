@@ -3,13 +3,29 @@ package com.db.node.BPlusTree;
 import java.io.Serializable;
 
 class InternalNode<T> extends Node implements Serializable {
-    int maxDegree;
-    int minDegree;
-    int degree;
-    InternalNode leftSibling;
-    InternalNode rightSibling;
-    T[] keys;
-    Node[] childPointers;
+    protected int maxDegree;
+    protected int minDegree;
+    protected int degree;
+    protected InternalNode leftSibling;
+    protected InternalNode rightSibling;
+    protected T[] keys;
+    protected Node[] childPointers;
+
+    protected InternalNode(int m, T[] keys) {
+        this.maxDegree = m;
+        this.minDegree = (int) Math.ceil(m / 2.0);
+        this.degree = 0;
+        this.keys = keys;
+        this.childPointers = new Node[this.maxDegree + 1];
+    }
+
+    protected InternalNode(int m, T[] keys, Node[] pointers) {
+        this.maxDegree = m;
+        this.minDegree = (int) Math.ceil(m / 2.0);
+        this.degree = linearNullSearch(pointers);
+        this.keys = keys;
+        this.childPointers = pointers;
+    }
 
     public void appendChildPointer(Node pointer) {
         this.childPointers[degree] = pointer;
@@ -75,19 +91,4 @@ class InternalNode<T> extends Node implements Serializable {
         this.degree--;
     }
 
-    public InternalNode(int m, T[] keys) {
-        this.maxDegree = m;
-        this.minDegree = (int) Math.ceil(m / 2.0);
-        this.degree = 0;
-        this.keys = keys;
-        this.childPointers = new Node[this.maxDegree + 1];
-    }
-
-    public InternalNode(int m, T[] keys, Node[] pointers) {
-        this.maxDegree = m;
-        this.minDegree = (int) Math.ceil(m / 2.0);
-        this.degree = linearNullSearch(pointers);
-        this.keys = keys;
-        this.childPointers = pointers;
-    }
 }

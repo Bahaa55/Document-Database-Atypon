@@ -1,9 +1,12 @@
 package com.db.node.BPlusTree;
 
 import java.io.Serializable;
+import java.util.List;
 
 class Node<T> implements Serializable {
-    InternalNode parent;
+    protected InternalNode parent;
+
+    protected Node(){}
 
     int linearNullSearch(Object[] pointers) {
         for (int i = 0; i < pointers.length; i++) {
@@ -13,13 +16,4 @@ class Node<T> implements Serializable {
         }
         return -1;
     }
-
-//    int linearNullSearch(BPlusTree.DictionaryPair[] dps) {
-//        for (int i = 0; i < dps.length; i++) {
-//            if (dps[i] == null) {
-//                return i;
-//            }
-//        }
-//        return -1;
-//    }
 }
