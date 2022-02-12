@@ -11,7 +11,7 @@ public class DuplicateHandler<T extends Comparable> implements Serializable {
     private HashMap<String,HashMap<T, TreeSet<String>>> sets;
     private static final long serialVersionUID = 5;
     
-    private DuplicateHandler(){
+    public DuplicateHandler(){
         sets = new HashMap<>();
 
         File directory = new File(ReadService.getDbPath() + "/sets");

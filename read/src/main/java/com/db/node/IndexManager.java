@@ -42,4 +42,8 @@ public class IndexManager implements Serializable{
 
         return indexes.get(schema).get(attribute).search(value);
     }
+
+    public IndexManager reset(){
+        return new IndexManager();
+    }
 }

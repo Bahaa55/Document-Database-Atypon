@@ -92,11 +92,14 @@ public class ReadService {
 
             dbPointer = newDbPointer;
             dbLock.release();
-            return true;
+
         } catch (Exception e) {
+            System.out.println(e);
             System.out.println("Couldn't update normally");
             return false;
         }
+        indexManager = indexManager.reset();
+        return true;
     }
 
     private boolean deleteDirectory(File directoryToBeDeleted) {

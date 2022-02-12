@@ -14,7 +14,7 @@ public class BPlusTree<T extends Comparable<T>> implements Serializable {
     public BPlusTree(int m, String schema) {
         this.m = m;
         this.root = null;
-        this.duplicateHandler = DuplicateHandler.getInstance();
+        this.duplicateHandler = new DuplicateHandler<>();
         this.schema = schema;
     }
 
