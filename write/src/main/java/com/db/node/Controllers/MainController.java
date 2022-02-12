@@ -54,8 +54,8 @@ public class MainController {
     }
 
     @GetMapping("/scale")
-    public void scale(){
-        adminController.scale();
+    public void scale(@RequestParam String token){
+        adminController.scale(token);
     }
 
     @DeleteMapping("/{id}")
