@@ -35,7 +35,7 @@ public class ReadNode implements java.util.Observer {
             PrintWriter writer = new PrintWriter(new OutputStreamWriter(output, charset), true);
             writer.append("--" + boundary).append(CRLF);
             writer.append("Content-Disposition: form-data; name=\"param\"").append(CRLF);
-            writer.append("Content-Type: text/plain; charset=" + charset).append(CRLF);
+            writer.append("Content-Type: multipart/form-data; charset=" + charset).append(CRLF);
             writer.append(CRLF).append(param).append(CRLF).flush();
 
             writer.append("--" + boundary).append(CRLF);
