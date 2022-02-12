@@ -6,6 +6,7 @@ class InternalNode<T> extends Node implements Serializable {
     protected int degree;
     protected T[] keys;
     protected Node[] childPointers;
+    private static final long serialVersionUID = 5;
 
     protected InternalNode(){}
 

@@ -9,6 +9,7 @@ public class BPlusTree<T extends Comparable<T>> implements Serializable {
     private LeafNode firstLeaf;
     private DuplicateHandler duplicateHandler;
     private String schema;
+    private static final long serialVersionUID = 5;
 
     public BPlusTree(int m, String schema) {
         this.m = m;

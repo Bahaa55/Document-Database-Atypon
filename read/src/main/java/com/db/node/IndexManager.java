@@ -5,9 +5,10 @@ import com.db.node.BPlusTree.BPlusTree;
 import java.io.*;
 import java.util.*;
 
-public class IndexManager {
+public class IndexManager implements Serializable{
     private static IndexManager instance = new IndexManager();
     private HashMap<String,HashMap<String, BPlusTree<String>>> indexes;
+    private static final long serialVersionUID = 5;
 
     private IndexManager(){
         indexes = new HashMap<>();

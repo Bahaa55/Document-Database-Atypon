@@ -9,7 +9,8 @@ public class DuplicateHandler<T extends Comparable> implements Serializable {
 
     private static DuplicateHandler instance = new DuplicateHandler<>();
     private HashMap<String,HashMap<T, TreeSet<String>>> sets;
-
+    private static final long serialVersionUID = 5;
+    
     private DuplicateHandler(){
         sets = new HashMap<>();
 
