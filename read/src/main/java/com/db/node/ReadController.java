@@ -37,7 +37,7 @@ public class ReadController {
 	@Async
 	@GetMapping("/{id}")
 	public CompletableFuture<String> getDocument(ModelMap model, @RequestParam String schema, @RequestParam String port, @PathVariable String id) {
-		return CompletableFuture.completedFuture(this.readService.getDocument(id,schema).toString()) + msg + port;
+		return CompletableFuture.completedFuture(this.readService.getDocument(id,schema).toString() + msg + port);
 	}
 
 	@Async
@@ -47,7 +47,7 @@ public class ReadController {
 									  @RequestParam String value,
 							     		  @RequestParam String port
 							    ){
-		return CompletableFuture.completedFuture(this.readService.getDocumentsFromIndex(schema,attribute,value).toString()) + msg + port;
+		return CompletableFuture.completedFuture(this.readService.getDocumentsFromIndex(schema,attribute,value).toString() + msg + port);
 	}
 
 	@PostMapping(value = "/update")
