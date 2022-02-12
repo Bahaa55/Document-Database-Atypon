@@ -9,8 +9,8 @@ public class AdminController {
         adminService.addNodeToCluster(port);
     }
 
-    public void scale(){
-        adminService.scaleHorizontally();
+    public void scale(String token){
+        adminService.scaleHorizontally(token);
     }
 
 }
