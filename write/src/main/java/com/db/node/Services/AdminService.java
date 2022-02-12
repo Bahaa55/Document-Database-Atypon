@@ -27,7 +27,7 @@ public class AdminService {
         loadBalancer.addObserver(node);
     }
 
-    public void scaleHorizontally(){
+    public void scaleHorizontally(String token){
         Integer nodesCount = config.get("nodes_config").getAsInt();
         int updated_node_count = nodesCount + 1;
         config.remove("nodes_config");
@@ -35,10 +35,8 @@ public class AdminService {
         updateConfig();
         nodesCount += 2001;
 
-        try(Scanner scanner = new Scanner(System.in)) {
-            System.out.println("Inter github token to access the repository: ");
-            String token = scanner.nextLine();
-            Runtime.getRuntime().exec("./bin/scale.sh "+ nodesCount.toString() + " " + token);
+        try {
+            Runtime.getRuntime().exec("../bin/scale.sh "+ nodesCount.toString() + " " + token);
             updateConfig();
         } catch (IOException e) {
             System.out.println("Couldn't scale the cluster, try again.");
