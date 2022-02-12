@@ -17,7 +17,6 @@ import java.util.concurrent.*;
 @RequestMapping("")
 public class ReadController {
 	private ReadService readService = ReadService.getInstance();
-	private final String msg = "\nThis request was handled by node: ";
 
 	public static void main(String[] args) {
 		SpringApplication.run(ReadController.class, args);
@@ -36,18 +35,17 @@ public class ReadController {
 
 	@Async
 	@GetMapping("/{id}")
-	public CompletableFuture<String> getDocument(ModelMap model, @RequestParam String schema, @RequestParam String port, @PathVariable String id) {
-		return CompletableFuture.completedFuture(this.readService.getDocument(id,schema).toString() + msg + port);
+	public CompletableFuture<String> getDocument(ModelMap model, @RequestParam String schema, @PathVariable String id) {
+		return CompletableFuture.completedFuture(this.readService.getDocument(id,schema).toString());
 	}
 
 	@Async
 	@GetMapping("/index")
 	public CompletableFuture<String> getDocumentsByIndex(@RequestParam String schema,
 									  @RequestParam String attribute,
-									  @RequestParam String value,
-							     		  @RequestParam String port
+									  @RequestParam String value
 							    ){
-		return CompletableFuture.completedFuture(this.readService.getDocumentsFromIndex(schema,attribute,value).toString() + msg + port);
+		return CompletableFuture.completedFuture(this.readService.getDocumentsFromIndex(schema,attribute,value).toString());
 	}
 
 	@PostMapping(value = "/update")
