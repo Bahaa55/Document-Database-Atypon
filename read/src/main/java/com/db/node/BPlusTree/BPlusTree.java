@@ -22,17 +22,17 @@ public class BPlusTree<T extends Comparable<T>> implements Serializable {
 
         DictionaryPair<T> target = new DictionaryPair<>(t,0);
 
-        int l = 0, r = numPairs-1;
-        while(r>=l){
-            int mid = (l+r)/2;
-            DictionaryPair<T> temp = dps[mid];
-            if(temp.compareTo(target) == 0){
+        int left = 0, right = numPairs-1;
+        while(right >= left){
+            int mid = (left+right)/2;
+            DictionaryPair<T> current = dps[mid];
+            if(current.compareTo(target) == 0){
                 return mid;
             }
-            else if(temp.compareTo(target) == 1)
-                r = mid - 1;
+            else if(current.compareTo(target) == 1)
+                right = mid - 1;
             else
-                l = mid + 1;
+                left = mid + 1;
         }
         return -1;
     }
@@ -80,7 +80,7 @@ public class BPlusTree<T extends Comparable<T>> implements Serializable {
     }
 
 
-    public List<String> search(T key) {
+    public List<String> search(T key, String attribute) {
 
         if (isEmpty()) {
             return null;
@@ -94,7 +94,7 @@ public class BPlusTree<T extends Comparable<T>> implements Serializable {
         if (index < 0) {
             return null;
         } else {
-            List<String> values = duplicateHandler.getValues(this.schema, dps[index].key);
+            List<String> values = duplicateHandler.getValues(this.schema, attribute, dps[index].key);
             values.add(new Integer(dps[index].value).toString());
             return values;
         }

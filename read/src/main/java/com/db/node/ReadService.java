@@ -34,12 +34,13 @@ public class ReadService {
         return instance;
     }
 
+    @Async()
     public static String getDbPath(){
         return "./db"+dbPointer + "/db";
     }
 
     @Async()
-    public JsonObject getDocument(String id, String schema) {
+    public JsonObject getDocument(String schema, String id) {
         JsonParser parser = new JsonParser();
         File file = new File(ReadService.getDbPath() + "/" + schema + "/" + id + ".json");
         try(FileReader fileReader = new FileReader(file)) {
@@ -54,14 +55,14 @@ public class ReadService {
     @Async()
     public List<JsonObject> getDocumentsFromIndex(String schema, String attribute, String value){
         List<String> ids = getIdsFromIndex(schema,attribute,value);
-        return getDocuments(ids,schema);
+        return getDocuments(schema,ids);
     }
 
     @Async()
-    private List<JsonObject> getDocuments(List<String> ids, String schema) {
+    private List<JsonObject> getDocuments(String schema, List<String> ids) {
         List<JsonObject> documents = new ArrayList<>();
         for(String id: ids){
-            documents.add(getDocument(id,schema));
+            documents.add(getDocument(schema,id));
         }
         return documents;
     }
@@ -94,7 +95,6 @@ public class ReadService {
             dbLock.release();
 
         } catch (Exception e) {
-            System.out.println(e);
             System.out.println("Couldn't update normally");
             return false;
         }

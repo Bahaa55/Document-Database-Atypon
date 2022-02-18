@@ -35,8 +35,11 @@ public class ReadController {
 
 	@Async
 	@GetMapping("/{id}")
-	public CompletableFuture<String> getDocument(ModelMap model, @RequestParam String schema, @PathVariable String id) {
-		return CompletableFuture.completedFuture(this.readService.getDocument(id,schema).toString());
+	public CompletableFuture<String> getDocument(
+			@RequestParam String schema,
+			@PathVariable String id
+	) {
+		return CompletableFuture.completedFuture(this.readService.getDocument(schema,id).toString());
 	}
 
 	@Async

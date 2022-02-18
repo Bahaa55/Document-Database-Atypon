@@ -1,7 +1,6 @@
 package com.db.node;
 
 import com.db.node.BPlusTree.BPlusTree;
-
 import java.io.*;
 import java.util.*;
 
@@ -40,10 +39,11 @@ public class IndexManager implements Serializable{
         if(indexes.get(schema).get(attribute) == null)
             return new ArrayList<>();
 
-        return indexes.get(schema).get(attribute).search(value);
+        return indexes.get(schema).get(attribute).search(attribute, value);
     }
 
     public IndexManager reset(){
-        return new IndexManager();
+        instance = new IndexManager();
+        return instance;
     }
 }
