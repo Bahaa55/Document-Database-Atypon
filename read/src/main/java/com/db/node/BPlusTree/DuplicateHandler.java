@@ -7,7 +7,7 @@ import java.util.*;
 public class DuplicateHandler<T extends Comparable> implements Serializable {
 
     private static DuplicateHandler instance = new DuplicateHandler<>();
-    private HashMap<String,HashMap<String,HashMap<T, TreeSet<String>>>> sets;
+    private HashMap<String, HashMap<T, TreeSet<String>>> sets;
     private static final long serialVersionUID = 5;
     
     public DuplicateHandler(){
@@ -19,7 +19,7 @@ public class DuplicateHandler<T extends Comparable> implements Serializable {
                 String schema = file.getName();
                 FileInputStream inputFile = new FileInputStream(file);
                 ObjectInputStream inputOis = new ObjectInputStream(inputFile);
-                sets.put(schema,(HashMap<String, HashMap<T, TreeSet<String>>>) inputOis.readObject());
+                sets.put(schema,(HashMap<T, TreeSet<String>>) inputOis.readObject());
             }catch(Exception e){
                 throw new RuntimeException("Can't load index for schema: "+ file.getName());
             }
@@ -30,16 +30,13 @@ public class DuplicateHandler<T extends Comparable> implements Serializable {
         return instance;
     }
 
-    public List<String> getValues(String schema, String attribute, T key){
+    public List<String> getValues(String schema, T key){
         if(sets.get(schema) == null)
             sets.put(schema,new HashMap<>());
 
-        if(sets.get(schema).get(attribute) == null)
-            sets.get(schema).put(attribute, new HashMap<>());
-
         if(sets.get(schema).get(key) == null)
             return new ArrayList<>();
-        return new ArrayList<>(sets.get(schema).get(attribute).get(key));
+        return new ArrayList<>(sets.get(schema).get(key));
     }
 
 }

@@ -39,7 +39,7 @@ public class IndexManager implements Serializable{
         if(indexes.get(schema).get(attribute) == null)
             return new ArrayList<>();
 
-        return indexes.get(schema).get(attribute).search(attribute, value);
+        return indexes.get(schema).get(attribute).search(value);
     }
 
     public IndexManager reset(){

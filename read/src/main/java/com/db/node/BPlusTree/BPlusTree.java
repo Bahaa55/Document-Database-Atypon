@@ -80,7 +80,7 @@ public class BPlusTree<T extends Comparable<T>> implements Serializable {
     }
 
 
-    public List<String> search(T key, String attribute) {
+    public List<String> search(T key) {
 
         if (isEmpty()) {
             return null;
@@ -94,7 +94,7 @@ public class BPlusTree<T extends Comparable<T>> implements Serializable {
         if (index < 0) {
             return null;
         } else {
-            List<String> values = duplicateHandler.getValues(this.schema, attribute, dps[index].key);
+            List<String> values = duplicateHandler.getValues(this.schema, dps[index].key);
             values.add(new Integer(dps[index].value).toString());
             return values;
         }
